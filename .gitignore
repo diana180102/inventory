@@ -1,0 +1,7 @@
+#Ignore env virtual
+.venv/
+#enviroment variable Backend
+./backend/.env
+
+#others
+.idea/
