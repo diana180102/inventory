@@ -24,3 +24,6 @@ class CreateCategory(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
