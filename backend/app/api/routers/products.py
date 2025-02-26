@@ -34,7 +34,7 @@ def create_product(product:CreateProduct) -> JSONResponse:
         product_row = connection.execute(query).fetchone()
 
         if product_row:
-            content = dict(product_row.mapping)
+            content = dict(product_row._mapping)
             return JSONResponse(content=content, status_code=201)
 
         return  JSONResponse(content={"error": "Product not found"})

@@ -7,15 +7,20 @@ from typing import Optional
 
 
 class Activity(BaseModel):
-    id:Optional[int]
+    id: int
     product_id: Product
     type: str
     quantity:int
     Date: DateTime
 
+class CreateActivity(BaseModel):
+    product_id: Product
+    type: str
+    quantity:int
+
+
     class Config:
         from_attributes = True
-
 
     @field_validator('type')
     def type_validator(cls, value):

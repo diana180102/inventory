@@ -23,7 +23,7 @@ class CreateProduct(BaseModel):
     description: str
     stock: int
     price: decimal.Decimal
-    category_id: Category
+    category_id: int
 
     @field_validator('name')
     def validator_name(cls, value):
