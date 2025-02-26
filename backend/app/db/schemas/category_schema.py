@@ -8,9 +8,6 @@ class Category(BaseModel):
     name: str
 
 
-
-
-
 class CreateCategory(BaseModel):
     name: str
 

@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI
 
+from backend.app.api.routers.activity import activity_router
 from backend.app.api.routers.categories import category_router
 from backend.app.api.routers.products import product_router
 from backend.app.config.db import engine, meta
@@ -11,6 +12,7 @@ from backend.app.db.models.activity_model import activities
 app = FastAPI()
 app.include_router(product_router, prefix="/products")
 app.include_router(category_router, prefix="/categories")
+app.include_router(activity_router, prefix="/activities")
 
 #created tables database
 meta.create_all(engine)
