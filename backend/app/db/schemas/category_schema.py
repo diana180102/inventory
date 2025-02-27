@@ -7,6 +7,9 @@ class Category(BaseModel):
     id: Optional[int]
     name: str
 
+    class Config:
+        from_attributes = True
+
 
 class CreateCategory(BaseModel):
     name: str

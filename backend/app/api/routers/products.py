@@ -1,16 +1,26 @@
-from fastapi import APIRouter
+from typing import List
+
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+
 from sqlalchemy.exc import SQLAlchemyError
 
-from backend.app.config.db import connection
-from backend.app.db.models.product_model import products
-from backend.app.db.schemas.product_schema import Product, CreateProduct
+from backend.app.api.services.products_services import ProductService
+
+from backend.app.db.schemas.product_schema import Product, CreateProduct, UpdateProduct
 
 product_router = APIRouter()
 
-@product_router.get("/", tags=['Products'])
+@product_router.get(path="/", tags=['Products'], response_model=List[Product])
 def get_products() -> Product:
-    return connection.execute(products.select()).fetchall()
+    products_list = ProductService.get_products()
+    return [dict(product) for product in products_list]
+
+@product_router.get(path="/{id}", tags=["Products"])
+def get_product_by_id(id:int):
+    product = ProductService.get_product_by_id(id)
+
+    return product
 
 @product_router.post("/", tags=['Products'], response_model=None)
 def create_product(product:CreateProduct) -> JSONResponse:
@@ -25,21 +35,15 @@ def create_product(product:CreateProduct) -> JSONResponse:
 
     new_product = product.model_dump()
     try:
-        #insert product
-        result = connection.execute(products.insert().values(new_product))
-        connection.commit()
-
-        #Get Product created
-        query = products.select().where(products.c.id == result.lastrowid)
-        product_row = connection.execute(query).fetchone()
-
-        if product_row:
-            content = dict(product_row._mapping)
-            return JSONResponse(content=content, status_code=201)
-
-        return  JSONResponse(content={"error": "Product not found"})
+        return  ProductService.create_product(new_product)
     except SQLAlchemyError as e:
-        connection.rollback()
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+       raise HTTPException(status_code=400, detail=str(e))
 
 
+@product_router.put(path="/{id}", tags=["Products"])
+def update_product(id:int, product:UpdateProduct):
+    return ProductService.update_product(id, product)
+
+@product_router.delete(path="/{id}", tags=["Products"])
+def delete_product(id:int):
+    return  ProductService.delete_product(id)

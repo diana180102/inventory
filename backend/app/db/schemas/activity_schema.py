@@ -1,6 +1,7 @@
-from xmlrpc.client import DateTime
+from datetime import datetime
 
 from pydantic import BaseModel, field_validator
+
 
 from backend.app.db.schemas.product_schema import Product
 from typing import Optional
@@ -11,7 +12,7 @@ class Activity(BaseModel):
     product_id: Product
     type: str
     quantity:int
-    Date: DateTime
+    Date: datetime
 
 class CreateActivity(BaseModel):
     product_id: Product
