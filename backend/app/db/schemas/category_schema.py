@@ -17,7 +17,7 @@ class CreateCategory(BaseModel):
     @field_validator('name')
     def name_validator(cls, value):
         if len(value) < 6:
-            raise ValueError('Name field must have a minimum length of 15 characters')
+            raise ValueError('Name field must have a minimum length of 6 characters')
         if len(value) > 255:
             raise ValueError('Name field must have a maximum length of 255 characters')
         return value
