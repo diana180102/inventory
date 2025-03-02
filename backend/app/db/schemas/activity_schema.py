@@ -7,15 +7,27 @@ from backend.app.db.schemas.product_schema import Product
 from typing import Optional
 
 
-class Activity(BaseModel):
+def type_validator( value):
+    if value != "in" and value != "out":
+        raise ValueError('type is incorrect')
+    return value
+
+def quantity_validator( value):
+    if value < 0:
+        raise ValueError('Quantity most be greater than 0 ')
+    return value
+
+
+class BaseActivity(BaseModel):
     id: int
     product_id: Product
     type: str
     quantity:int
     Date: datetime
 
+
 class CreateActivity(BaseModel):
-    product_id: Product
+    product_id: int
     type: str
     quantity:int
 
@@ -23,14 +35,19 @@ class CreateActivity(BaseModel):
     class Config:
         from_attributes = True
 
-    @field_validator('type')
-    def type_validator(cls, value):
-        if value != "in" or value != "out":
-            raise ValueError('type is incorrect')
-        return value
+    _validate_type = field_validator("type")(type_validator)
+    _validate_quantity = field_validator("quantity")(quantity_validator)
 
-    @field_validator('quantity')
-    def quantity_validator(cls, value):
-        if value < 0:
-            raise ValueError('Quantity most be greater than 0 ')
-        return value
+
+
+class UpdateActivity(BaseModel):
+    product_id: int | None = None
+    type: Optional[str]
+    quantity: Optional[int]
+
+    class Config:
+        from_attributes = True
+
+    _validate_type = field_validator("type")(type_validator)
+    _validate_quantity = field_validator("quantity")(quantity_validator)
+
